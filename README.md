@@ -40,4 +40,4 @@ The game will have a menu that allows users to configure the following parameter
 
 ### About
 - This is the initial stage of creating a tic-tac-toe game. 
-- **Version** 1.1
+- Version 1.1
