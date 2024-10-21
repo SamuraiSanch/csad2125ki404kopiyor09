@@ -15,22 +15,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Клонуємо репозиторій
+      # Clone repo
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # Встановлюємо CMake
+      # Install CMake
       - name: Install CMake
         run: |
           sudo apt-get update
           sudo apt-get install -y cmake g++
 
-      # Встановлюємо Boost
+      # Install Boost
       - name: Install Boost
         run: |
           sudo apt-get install -y libboost-all-dev
 
-      # Завантажуємо та компілюємо необхідну версію Boost
+      # Install and compile Boost
       - name: Build Boost
         run: |
           cd ~
@@ -41,7 +41,7 @@ jobs:
           ./b2
           sudo ./b2 install
 
-      # Виконуємо скрипт збірки Visual Studio проєкту через CMake і зберігаємо результат в build/vs/
+      # Run script build VS, then save result to build/vs/
       - name: Build Visual Studio Project
         run: |
           mkdir -p build/vs
@@ -49,46 +49,46 @@ jobs:
           cmake ../..
           cmake --build .
 
-      # Запускаємо виконуваний файл Visual Studio та проводимо тестування його працездатності
+      # Launch the Visual Studio executable and test its functionality
       - name: Run VS Executable
         run: |
           cd build/vs
           chmod +x csadkopiy09
           ./csadkopiy09 > result.log && echo "VS Executable ran successfully!" >> result.log || echo "VS Executable failed." >> result.log
           
-      # Завантажуємо файл результату як артефакт
+      # Download the result file as an artifact
       - name: Upload Result Log
         uses: actions/upload-artifact@v3
         with:
           name: vs_executable_result
           path: build/vs/result.log
 
-      # Архівуємо бінарні файли для створення артефактів (VS)
+      # Archive binaries for creating artifacts (VS)
       - name: Archive VS Binaries
         uses: actions/upload-artifact@v3
         with:
           name: vs_binaries
           path: build/vs/
 
-      # Завантажуємо та встановлюємо Arduino CLI
+      # Download and install the Arduino CLI
       - name: Install Arduino CLI
         run: |
           curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/install.sh | sh
           sudo mv bin/arduino-cli /usr/local/bin/
           arduino-cli core update-index
 
-      # Встановлюємо ядро для Arduino Uno
+      # Install the core for Arduino Uno
       - name: Install Arduino Core
         run: |
           arduino-cli core install arduino:avr
 
-      # Компілюємо .ino файл та зберігаємо в build/arduino/
+      # Compile the .ino file and save it in build/arduino/
       - name: Build Arduino Project
         run: |
           mkdir -p build/arduino
           arduino-cli compile --fqbn arduino:avr:uno src/HW_task2/csadkopiy09/csadkopiy09.ino --output-dir build/arduino
 
-      # Архівуємо Arduino бінарні файли в build/arduino/
+      # Archiving Arduino binary files in build/arduino/
       - name: Archive Arduino Binaries
         uses: actions/upload-artifact@v3
         with:

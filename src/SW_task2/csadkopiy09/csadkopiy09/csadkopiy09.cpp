@@ -10,29 +10,29 @@ int main() {
     asio::serial_port serial(io);
 
     try {
-        // Відкриваємо послідовний порт і встановлюємо швидкість
+        // Open the serial port and set the speed
         serial.open("COM3"); 
         serial.set_option(asio::serial_port_base::baud_rate(9600)); 
 
-        // Надсилаємо повідомлення на Arduino
+        // Sending a message to Arduino
         std::string message = "Hello, Arduino Uno R3!\n";
         if (asio::write(serial, asio::buffer(message))) {
-            // Та в консоль
+            // And to Console
             std::cout << "Client -> Arduino: " << message; 
         }
 
-        // Додаємо затримку для отримання відповіді
+        // Add a delay to receive a response
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); 
 
-        // Отримуємо відповідь
+        // Get an answer
         char buffer[256];
-        // Зчитуємо отримані дані
+        // Read the received data
         size_t bytesRead = serial.read_some(asio::buffer(buffer)); 
-        // Додаємо нульовий термінатор для коректного виводу
+        // Add a zero terminator for correct output
         buffer[bytesRead] = '\0'; 
-        // Виводимо відповідь
+        // Show the answer
         std::cout << "Arduino -> Client: " << buffer << std::endl; 
-        // Закриваємо порт
+        // Close the port
         serial.close(); 
     }
     catch (std::exception& e) {
